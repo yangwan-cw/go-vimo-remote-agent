@@ -25,8 +25,8 @@ func NewWindowsCapturer(config *CaptureConfig) (*WindowsCapturer, error) {
 
 	bounds := screenshot.GetDisplayBounds(config.DisplayIndex)
 
-	fmt.Printf("Windows捕获器初始化\n")
-	fmt.Printf("分辨率: %dx%d\n", bounds.Dx(), bounds.Dy())
+	fmt.Printf("Windows captrue init \n")
+	fmt.Printf("resolution: %dx%d\n", bounds.Dx(), bounds.Dy())
 
 	return &WindowsCapturer{
 		config:       config,

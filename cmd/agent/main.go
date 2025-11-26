@@ -12,8 +12,7 @@ import (
 )
 
 func main() {
-	fmt.Println("Hello World!")
-	fmt.Println("Go-Remote Agent 运行成功！")
+	fmt.Println("Go-Remote Agent run scuccess！")
 
 	config := capture.DefaultConfig()
 
@@ -21,19 +20,19 @@ func main() {
 	var err error
 
 	if runtime.GOOS == "windows" {
-		fmt.Println("使用Windows捕获器")
+		fmt.Println("used Windows capture")
 		capturer, err = capture.NewWindowsCapturer(config)
 	} else {
-		fmt.Println(" 当前仅支持Windows，Linux版本开发中")
+		fmt.Println(" Currently, only Windows is supported. The Linux version is under development")
 		return
 	}
 	if err != nil {
-		fmt.Printf(" 初始化失败: %v\n", err)
+		fmt.Printf(" init error: %v\n", err)
 		return
 	}
 	width, height, _ := capturer.GetScreenSize()
-	fmt.Printf("\n屏幕尺寸: %dx%d\n\n", width, height)
-	fmt.Println(" 开始捕获10帧...\n")
+	fmt.Printf("\nscreen size: %dx%d\n\n", width, height)
+	fmt.Println(" start cpatrue 10 frame...\n")
 
 	os.MkdirAll("output", 0755)
 
@@ -41,7 +40,7 @@ func main() {
 		start := time.Now()
 		img, err := capturer.CaptureScreen()
 		if err != nil {
-			fmt.Printf(" 帧%d失败: %v\n", i+1, err)
+			fmt.Printf(" frame%derror: %v\n", i+1, err)
 			continue
 		}
 
@@ -51,10 +50,10 @@ func main() {
 		file.Close()
 
 		elapsed := time.Since(start)
-		fmt.Printf("帧%d - 耗时: %v - %s\n", i+1, elapsed, filename)
+		fmt.Printf("frame%d - time: %v - %s\n", i+1, elapsed, filename)
 
 		time.Sleep(1 * time.Second)
 	}
-	fmt.Println("\n 完成！截图保存在 output/ 目录")
+	fmt.Println("\n done！frame saved to output/ dir")
 
 }
