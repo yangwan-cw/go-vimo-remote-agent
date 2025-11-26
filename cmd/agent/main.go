@@ -2,16 +2,14 @@ package main
 
 import (
 	"fmt"
+	"github.com/yangwan/go-vimo-agent/internal/capture"
+	"github.com/yangwan/go-vimo-agent/internal/logger"
+	"go.uber.org/zap"
 	"image/jpeg"
 	"os"
 	"path/filepath"
 	"runtime"
 	"time"
-
-	"github.com/yangwan/go-vimo-agent/internal/capture"
-
-	"github.com/yangwan/go-vimo-agent/internal/logger"
-	"go.uber.org/zap"
 )
 
 func main() {
