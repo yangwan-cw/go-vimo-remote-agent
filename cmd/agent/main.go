@@ -9,10 +9,19 @@ import (
 	"time"
 
 	"github.com/yangwan/go-vimo-agent/internal/capture"
+
+	"github.com/yangwan/go-vimo-agent/internal/logger"
+	"go.uber.org/zap"
 )
 
 func main() {
-	fmt.Println("Go-Remote Agent run scuccess！")
+	// 初始化日志器（开发模式）
+	if err := logger.Init(true); err != nil {
+		panic("Failed to initialize logger: " + err.Error())
+	}
+	defer logger.Sync()
+
+	logger.Info("Go-Remote Agent started successfully")
 
 	config := capture.DefaultConfig()
 
@@ -20,19 +29,19 @@ func main() {
 	var err error
 
 	if runtime.GOOS == "windows" {
-		fmt.Println("used Windows capture")
+		logger.Info("Using Windows capture")
 		capturer, err = capture.NewWindowsCapturer(config)
 	} else {
-		fmt.Println(" Currently, only Windows is supported. The Linux version is under development")
+		logger.Warn("Currently, only Windows is supported. The Linux version is under development")
 		return
 	}
 	if err != nil {
-		fmt.Printf(" init error: %v\n", err)
+		logger.Error("Failed to initialize capturer", zap.Error(err))
 		return
 	}
 	width, height, _ := capturer.GetScreenSize()
-	fmt.Printf("\nscreen size: %dx%d\n\n", width, height)
-	fmt.Println(" start cpatrue 10 frame...\n")
+	logger.Info("Screen size detected", zap.Int("width", width), zap.Int("height", height))
+	logger.Info("Starting to capture 10 frames")
 
 	os.MkdirAll("output", 0755)
 
@@ -40,7 +49,7 @@ func main() {
 		start := time.Now()
 		img, err := capturer.CaptureScreen()
 		if err != nil {
-			fmt.Printf(" frame%derror: %v\n", i+1, err)
+			logger.Error("Failed to capture frame", zap.Int("frame", i+1), zap.Error(err))
 			continue
 		}
 
@@ -50,10 +59,13 @@ func main() {
 		file.Close()
 
 		elapsed := time.Since(start)
-		fmt.Printf("frame%d - time: %v - %s\n", i+1, elapsed, filename)
+		logger.Info("Frame captured",
+			zap.Int("frame", i+1),
+			zap.Duration("time", elapsed),
+			zap.String("filename", filename))
 
 		time.Sleep(1 * time.Second)
 	}
-	fmt.Println("\n done！frame saved to output/ dir")
+	logger.Info("All frames captured successfully", zap.String("output_dir", "output/"))
 
 }
